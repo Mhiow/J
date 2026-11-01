@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Untuk Kamu ✨</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="matcha-theme">
+
+  <!-- Canvas for Falling Stars & Starfield -->
+  <canvas id="skyCanvas"></canvas>
+
+  <!-- Floating Ambient Particles Container -->
+  <div id="ambientParticles" class="ambient-particles"></div>
+
+  <!-- Main Container -->
+  <main class="main-wrapper">
+
+    <!-- STEP 1: Pertanyaan Pertama -->
+    <section id="step1" class="card active">
+      <div class="card-badge">🌱 </div>
+      <h1 class="question-title">Apakah kamu capek hari ini sayang?</h1>
+      <p class="question-subtitle">otsukare sama.</p>
+      <div class="button-group">
+        <button id="btnCapekIya" class="btn btn-primary" type="button">
+          <span class="btn-icon">🍃</span> Iya, capek banget
+        </button>
+        <button id="btnCapekTidak" class="btn btn-secondary" type="button">
+          <span class="btn-icon">✨</span> Nggak terlalu
+        </button>
+      </div>
+    </section>
+
+    <!-- STEP 2: Pertanyaan Kedua -->
+    <section id="step2" class="card hidden">
+      <div class="card-badge">✨ ini buat kamu yang spesial</div>
+      <h1 class="question-title">Apakah mau lihat bintang jatuh ?</h1>
+      <p class="question-subtitle">bagus loh....hehehehe</p>
+      <div class="button-group">
+        <button id="btnBintangIya" class="btn btn-gold" type="button">
+          <span class="btn-icon">🌠</span> Iya, mau banget!
+        </button>
+        <button id="btnBintangTidak" class="btn btn-ghost" type="button">
+          <span class="btn-icon">💭</span> Tidak
+        </button>
+      </div>
+    </section>
+
+    <!-- STEP 3: Halaman Malam Bintang Jatuh & Bunga Bercahaya -->
+    <section id="step3" class="night-scene hidden">
+      
+      <!-- Pesan Penghangat Hati -->
+      <div class="night-message">
+        <span class="scene-tag">💫 Bagus Deshou....</span>
+        <h2 class="scene-title">今日頑張ってくれてありがとう</h2>
+        <p class="scene-subtitle">
+          Semoga besok juga dilancarkan lagi.<br>
+          ITSUMO ARIGATOU.
+        </p>
+      </div>
+
+      <!-- Area Bunga Kuningan Bercahaya (Golden Glowing Flower) -->
+      <div class="flower-container" id="flowerContainer" title="Sentuh bunganya untuk memancarkan kilau ✨">
+        <!-- Aura Cahaya di Balik Bunga -->
+        <div class="flower-aura"></div>
+        <div class="flower-glow-pulse"></div>
+
+        <!-- SVG Bunga Kuningan / Emas -->
+        <svg class="golden-flower-svg" viewBox="0 0 300 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <!-- Gradien Emas / Kuningan Bercahaya -->
+            <linearGradient id="stemGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#72b01d" />
+              <stop offset="60%" stop-color="#4a7c18" />
+              <stop offset="100%" stop-color="#2d520e" />
+            </linearGradient>
+
+            <linearGradient id="leafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#a4db52" />
+              <stop offset="70%" stop-color="#558b1f" />
+              <stop offset="100%" stop-color="#2c530c" />
+            </linearGradient>
+
+            <linearGradient id="brassGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#fff8cc" />
+              <stop offset="35%" stop-color="#ffd54f" />
+              <stop offset="75%" stop-color="#ffb300" />
+              <stop offset="100%" stop-color="#b8860b" />
+            </linearGradient>
+
+            <linearGradient id="brassGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#ffffff" />
+              <stop offset="25%" stop-color="#ffe57f" />
+              <stop offset="65%" stop-color="#ffc107" />
+              <stop offset="100%" stop-color="#e69500" />
+            </linearGradient>
+
+            <radialGradient id="centerGlowGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#ffffff" />
+              <stop offset="40%" stop-color="#fff59d" />
+              <stop offset="75%" stop-color="#ffca28" />
+              <stop offset="100%" stop-color="#ff8f00" />
+            </radialGradient>
+
+            <!-- Filter Cahaya Emas / Brass Luminous Glow -->
+            <filter id="goldenGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur1" />
+              <feGaussianBlur in="SourceGraphic" stdDeviation="15" result="blur2" />
+              <feMerge>
+                <feMergeNode in="blur2" />
+                <feMergeNode in="blur1" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+
+            <filter id="pollenGlow">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="3" />
+            </filter>
+          </defs>
+
+          <!-- Batang Bunga -->
+          <path class="flower-stem" d="M150 190 Q145 280 152 380" stroke="url(#stemGrad)" stroke-width="6" stroke-linecap="round"/>
+
+          <!-- Daun Kiri & Kanan dengan Urat Bercahaya -->
+          <g class="flower-leaves">
+            <!-- Daun Kiri -->
+            <path d="M148 275 C100 270 70 230 65 210 C90 220 135 250 148 275 Z" fill="url(#leafGrad)" />
+            <path d="M148 275 C115 248 85 224 65 210" stroke="#c8f582" stroke-width="1.5" stroke-linecap="round" opacity="0.8"/>
+            
+            <!-- Daun Kanan -->
+            <path d="M151 315 C195 310 230 275 235 250 C210 262 165 290 151 315 Z" fill="url(#leafGrad)" />
+            <path d="M151 315 C185 288 215 266 235 250" stroke="#c8f582" stroke-width="1.5" stroke-linecap="round" opacity="0.8"/>
+          </g>
+
+          <!-- Kelopak Bunga Emas/Kuningan (Layered Glowing Petals) -->
+          <g class="petals-group" filter="url(#goldenGlow)">
+            
+            <!-- Kelopak Lapisan Belakang / Outer Petals -->
+            <path class="petal petal-back petal-1" d="M150 180 C110 130 90 70 150 20 C210 70 190 130 150 180 Z" fill="url(#brassGrad1)" opacity="0.9" />
+            <path class="petal petal-back petal-2" d="M150 180 C80 160 50 100 95 50 C140 100 145 150 150 180 Z" fill="url(#brassGrad2)" opacity="0.85" />
+            <path class="petal petal-back petal-3" d="M150 180 C220 160 250 100 205 50 C160 100 155 150 150 180 Z" fill="url(#brassGrad2)" opacity="0.85" />
+            
+            <!-- Kelopak Samping Melengkung -->
+            <path class="petal petal-mid petal-4" d="M150 180 C60 190 50 130 100 90 C135 130 145 160 150 180 Z" fill="url(#brassGrad1)" opacity="0.95" />
+            <path class="petal petal-mid petal-5" d="M150 180 C240 190 250 130 200 90 C165 130 155 160 150 180 Z" fill="url(#brassGrad1)" opacity="0.95" />
+
+            <!-- Kelopak Lapisan Tengah Menyilang -->
+            <path class="petal petal-front petal-6" d="M150 180 C110 160 100 110 135 80 C155 120 152 160 150 180 Z" fill="url(#brassGrad2)" />
+            <path class="petal petal-front petal-7" d="M150 180 C190 160 200 110 165 80 C145 120 148 160 150 180 Z" fill="url(#brassGrad1)" />
+            
+            <!-- Kelopak Kuncup Inti Depan (Golden Core) -->
+            <path class="petal petal-core" d="M150 175 C130 155 125 120 150 100 C175 120 170 155 150 175 Z" fill="url(#brassGrad2)" />
+
+            <!-- Pusat Bunga Bercahaya Kuat (Luminous Core) -->
+            <circle class="flower-core-glow" cx="150" cy="140" r="14" fill="url(#centerGlowGrad)" />
+            <circle class="flower-core-sparkle" cx="150" cy="140" r="7" fill="#ffffff" />
+            
+            <!-- Serbuk Sari Emas Melayang (Pollen Stamen) -->
+            <circle cx="143" cy="125" r="2.5" fill="#fff9c4" filter="url(#pollenGlow)" />
+            <circle cx="157" cy="126" r="2.8" fill="#fff9c4" filter="url(#pollenGlow)" />
+            <circle cx="150" cy="118" r="3" fill="#ffffff" filter="url(#pollenGlow)" />
+            <circle cx="138" cy="135" r="2" fill="#ffe082" />
+            <circle cx="162" cy="134" r="2.2" fill="#ffe082" />
+          </g>
+        </svg>
+
+        <!-- Golden Sparkles Particle Generator Emitter -->
+        <div class="flower-pollen-particles" id="flowerPollen"></div>
+        
+        <!-- Pedestal / Cahaya Bawah Tanah -->
+        <div class="flower-base-glow"></div>
+      </div>
+
+      <!-- Tombol Aksi Nyalakan Suara / Audio & Efek Ketuk -->
+      <div class="scene-footer">
+        <button id="btnSoundToggle" class="sound-chip" type="button" aria-label="Nyalakan Nada Suasana">
+          <span id="soundIcon">🔔</span> <span id="soundText">Bunyi Lonceng Bintang</span>
+        </button>
+        <span class="interactive-hint">✨ Coba klik bunganya BEB</span>
+      </div>
+
+    </section>
+
+    <!-- Modal Dialog Lucu jika memilih "Tidak" pada Bintang Jatuh -->
+    <div id="reconsiderModal" class="modal-backdrop hidden">
+      <div class="modal-box">
+        <div class="modal-emoji">🥺</div>
+        <h3 class="modal-title">Beneran Nggak Mau?</h3>
+        <p class="modal-desc">
+          Bintang jatuh malam ini langka banget lho, khusus dipersiapkan buat nemenin dan menghibur kamu...
+        </p>
+        <div class="modal-actions">
+          <button id="btnModalIya" class="btn btn-gold">
+            Oke deh, aku mau lihat! 🌟
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

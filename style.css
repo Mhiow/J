@@ -1,0 +1,720 @@
+/* ==========================================================================
+   TEMA & VARIABEL WARNA
+   ========================================================================== */
+:root {
+  /* Matcha Palette */
+  --matcha-bg-main: #9cb08f;
+  --matcha-bg-dark: #7a8f6d;
+  --matcha-bg-light: #c1d4b6;
+  --matcha-accent: #526845;
+  --matcha-card-bg: rgba(255, 255, 255, 0.88);
+  --matcha-card-border: rgba(255, 255, 255, 0.6);
+  --matcha-text-primary: #2d3826;
+  --matcha-text-secondary: #58674f;
+
+  /* Golden / Brass Palette */
+  --gold-glow: #ffd700;
+  --gold-deep: #b8860b;
+  --gold-light: #fff59d;
+  --gold-bright: #ffc107;
+  --gold-gradient: linear-gradient(135deg, #ffe57f 0%, #ffc107 45%, #e69500 85%, #b8860b 100%);
+  --gold-box-shadow: 0 0 25px rgba(255, 193, 7, 0.5), 0 0 50px rgba(255, 160, 0, 0.3);
+
+  /* Night Palette */
+  --night-bg: #03030a;
+  --night-text: #f0f3f6;
+  --night-subtext: #a0aec0;
+
+  --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  
+  --transition-smooth: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
+   RESET & DASAR HALAMAN
+   ========================================================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+}
+
+body.matcha-theme {
+  background: radial-gradient(circle at 50% 30%, #bfd4b5 0%, #9cb08f 50%, #768a68 100%);
+  color: var(--matcha-text-primary);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background 1.5s ease-in-out, color 1.5s ease-in-out;
+  position: relative;
+}
+
+/* Transisi ke Langit Malam Hitam */
+body.night-theme {
+  background: radial-gradient(ellipse at 50% 80%, #0c0d1e 0%, #03030a 60%, #000000 100%) !important;
+  color: var(--night-text) !important;
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   CANVAS BINTANG JATUH (BACKGROUND ANIMASI)
+   ========================================================================== */
+#skyCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 2s ease-in-out;
+}
+
+body.night-theme #skyCanvas {
+  opacity: 1;
+}
+
+/* Floating Matcha Petals / Ambient Sparkles */
+.ambient-particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.matcha-leaf {
+  position: absolute;
+  width: 14px;
+  height: 22px;
+  background: rgba(100, 130, 85, 0.25);
+  border-radius: 50% 0 50% 0;
+  filter: blur(0.5px);
+  animation: floatLeaf 12s linear infinite;
+}
+
+@keyframes floatLeaf {
+  0% {
+    transform: translateY(105vh) rotate(0deg) translateX(0);
+    opacity: 0;
+  }
+  15% { opacity: 0.6; }
+  85% { opacity: 0.6; }
+  100% {
+    transform: translateY(-20px) rotate(360deg) translateX(50px);
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   WRAPPER UTAMA
+   ========================================================================== */
+.main-wrapper {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 600px;
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* ==========================================================================
+   CARD PERTANYAAN (STEP 1 & STEP 2)
+   ========================================================================== */
+.card {
+  width: 100%;
+  background: var(--matcha-card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid var(--matcha-card-border);
+  border-radius: 32px;
+  padding: 44px 36px;
+  text-align: center;
+  box-shadow: 
+    0 20px 40px -15px rgba(60, 75, 50, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.4) inset;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.6s ease;
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.card.hidden {
+  display: none;
+  opacity: 0;
+  transform: translateY(20px) scale(0.96);
+  pointer-events: none;
+}
+
+.card.fade-out {
+  opacity: 0;
+  transform: translateY(-24px) scale(0.95);
+  pointer-events: none;
+}
+
+.card.fade-in {
+  animation: cardAppear 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes cardAppear {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.card-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  background: rgba(122, 143, 109, 0.15);
+  border: 1px solid rgba(122, 143, 109, 0.25);
+  color: var(--matcha-accent);
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  margin-bottom: 20px;
+}
+
+.question-title {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.35;
+  color: var(--matcha-text-primary);
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+.question-subtitle {
+  font-size: 1.05rem;
+  color: var(--matcha-text-secondary);
+  line-height: 1.6;
+  margin-bottom: 34px;
+  font-weight: 500;
+}
+
+/* Button Group */
+.button-group {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   BUTTON STYLES
+   ========================================================================== */
+.btn {
+  font-family: var(--font-family);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 30px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  border-radius: 20px;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+  user-select: none;
+  min-width: 150px;
+}
+
+.btn:active {
+  transform: scale(0.95) !important;
+}
+
+.btn-icon {
+  font-size: 1.2rem;
+}
+
+/* Button Matcha Primary */
+.btn-primary {
+  background: linear-gradient(135deg, #6c865b 0%, #4f6640 100%);
+  color: #ffffff;
+  box-shadow: 0 10px 24px -4px rgba(79, 102, 64, 0.45);
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 14px 28px -4px rgba(79, 102, 64, 0.55);
+}
+
+/* Button Secondary */
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--matcha-accent);
+  border: 1.5px solid rgba(122, 143, 109, 0.3);
+}
+
+.btn-secondary:hover {
+  background: #ffffff;
+  transform: translateY(-3px) scale(1.02);
+  border-color: var(--matcha-accent);
+  box-shadow: 0 12px 24px -6px rgba(79, 102, 64, 0.18);
+}
+
+/* Button Gold Glowing (Pertanyaan 2: Iya) */
+.btn-gold {
+  background: var(--gold-gradient);
+  color: #3b2800;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.4);
+  box-shadow: 
+    0 8px 24px rgba(255, 179, 0, 0.4),
+    0 0 12px rgba(255, 235, 59, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-gold::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  transform: rotate(30deg);
+  animation: goldShimmer 3.5s infinite;
+}
+
+@keyframes goldShimmer {
+  0% { transform: translateX(-100%) rotate(30deg); }
+  35%, 100% { transform: translateX(100%) rotate(30deg); }
+}
+
+.btn-gold:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 
+    0 12px 30px rgba(255, 179, 0, 0.55),
+    0 0 25px rgba(255, 215, 0, 0.65);
+}
+
+/* Button Ghost (Pertanyaan 2: Tidak) */
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.85);
+  color: #666;
+  border: 1.5px solid rgba(0, 0, 0, 0.08);
+}
+
+.btn-ghost:hover {
+  background: #ffffff;
+  transform: translateY(-2px);
+  color: #333;
+}
+
+/* ==========================================================================
+   STEP 3: NIGHT SCENE (LANGIT MALAM & BUNGA KUNINGAN BERCAHAYA)
+   ========================================================================== */
+.night-scene {
+  width: 100%;
+  max-width: 650px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  z-index: 10;
+  animation: sceneAppear 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.night-scene.hidden {
+  display: none;
+}
+
+@keyframes sceneAppear {
+  0% {
+    opacity: 0;
+    transform: translateY(35px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Pesan Malam */
+.night-message {
+  margin-bottom: 12px;
+  padding: 0 16px;
+}
+
+.scene-tag {
+  display: inline-block;
+  padding: 6px 18px;
+  background: rgba(255, 215, 0, 0.12);
+  border: 1px solid rgba(255, 215, 0, 0.35);
+  color: #ffe082;
+  border-radius: 50px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-bottom: 14px;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+}
+
+.scene-title {
+  font-family: var(--font-serif);
+  font-size: 2.2rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #fff9e6;
+  text-shadow: 
+    0 0 20px rgba(255, 215, 0, 0.4),
+    0 2px 10px rgba(0, 0, 0, 0.7);
+  margin-bottom: 12px;
+}
+
+.scene-subtitle {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: #cbd5e1;
+  max-width: 520px;
+  margin: 0 auto;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+/* ==========================================================================
+   BUNGA KUNINGAN BERCAHAYA (GOLDEN/BRASS GLOWING FLOWER)
+   ========================================================================== */
+.flower-container {
+  position: relative;
+  width: 290px;
+  height: 390px;
+  margin: 10px auto 0;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  transform-origin: bottom center;
+  animation: gentleSway 7s ease-in-out infinite alternate;
+  user-select: none;
+}
+
+@keyframes gentleSway {
+  0% { transform: rotate(-1.5deg); }
+  50% { transform: rotate(1deg); }
+  100% { transform: rotate(-1.5deg); }
+}
+
+/* Aura Cahaya di Belakang Bunga */
+.flower-aura {
+  position: absolute;
+  bottom: 130px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(
+    circle, 
+    rgba(255, 215, 0, 0.35) 0%, 
+    rgba(255, 179, 0, 0.18) 45%, 
+    rgba(255, 140, 0, 0.05) 70%, 
+    transparent 85%
+  );
+  border-radius: 50%;
+  filter: blur(20px);
+  pointer-events: none;
+  animation: auraPulse 4.5s ease-in-out infinite alternate;
+}
+
+.flower-glow-pulse {
+  position: absolute;
+  bottom: 145px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 130px;
+  height: 130px;
+  background: radial-gradient(
+    circle, 
+    rgba(255, 245, 157, 0.65) 0%, 
+    rgba(255, 215, 0, 0.3) 50%, 
+    transparent 80%
+  );
+  border-radius: 50%;
+  filter: blur(12px);
+  pointer-events: none;
+  animation: corePulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes auraPulse {
+  0% { transform: translateX(-50%) scale(0.92); opacity: 0.7; }
+  100% { transform: translateX(-50%) scale(1.15); opacity: 1; }
+}
+
+@keyframes corePulse {
+  0% { transform: translateX(-50%) scale(0.9); opacity: 0.6; }
+  100% { transform: translateX(-50%) scale(1.12); opacity: 0.95; }
+}
+
+/* SVG Elemen Bunga */
+.golden-flower-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 25px rgba(255, 200, 0, 0.7))
+          drop-shadow(0 0 55px rgba(255, 160, 0, 0.45));
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.flower-container:hover .golden-flower-svg {
+  filter: drop-shadow(0 0 35px rgba(255, 220, 0, 0.9))
+          drop-shadow(0 0 75px rgba(255, 170, 0, 0.65));
+  transform: scale(1.02);
+}
+
+/* Animasi Kelopak Bunga Emas Berdenyut */
+.petals-group {
+  animation: petalsBreathe 4s ease-in-out infinite alternate;
+  transform-origin: 150px 140px;
+}
+
+@keyframes petalsBreathe {
+  0% { transform: scale(0.98); }
+  100% { transform: scale(1.02); }
+}
+
+.flower-core-glow {
+  animation: coreFlicker 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes coreFlicker {
+  0% { opacity: 0.75; transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1.08); }
+}
+
+/* Pedestal Cahaya Bawah Tanah */
+.flower-base-glow {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140px;
+  height: 25px;
+  background: radial-gradient(ellipse at center, rgba(255, 215, 0, 0.45) 0%, rgba(120, 180, 50, 0.2) 50%, transparent 80%);
+  border-radius: 50%;
+  filter: blur(8px);
+  pointer-events: none;
+}
+
+/* Partikel Serbuk Sari Emas */
+.flower-pollen-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.golden-pollen {
+  position: absolute;
+  border-radius: 50%;
+  background: #fff9c4;
+  box-shadow: 0 0 8px #ffd54f, 0 0 14px #ffb300;
+  pointer-events: none;
+  animation: floatPollen 3.5s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes floatPollen {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.4);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(calc(var(--dx) * 0.3), calc(var(--dy) * 0.3)) scale(1.2);
+  }
+  80% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy)) scale(0.2);
+  }
+}
+
+/* Footer Langit Malam */
+.scene-footer {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.sound-chip {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  color: #ffecb3;
+  padding: 8px 18px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: var(--font-family);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+.sound-chip:hover {
+  background: rgba(255, 215, 0, 0.18);
+  border-color: rgba(255, 215, 0, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.25);
+}
+
+.interactive-hint {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  letter-spacing: 0.2px;
+}
+
+/* ==========================================================================
+   MODAL DIALOG (JIKA MEMILIH TIDAK PADA BINTANG JATUH)
+   ========================================================================== */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 100;
+  animation: modalFadeIn 0.3s ease forwards;
+}
+
+.modal-backdrop.hidden {
+  display: none;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-box {
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 34px 28px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  animation: modalSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalSlideUp {
+  from {
+    transform: translateY(25px) scale(0.94);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.modal-emoji {
+  font-size: 3rem;
+  margin-bottom: 12px;
+  animation: headWiggle 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes headWiggle {
+  0% { transform: rotate(-5deg); }
+  100% { transform: rotate(5deg); }
+}
+
+.modal-title {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 10px;
+}
+
+.modal-desc {
+  font-size: 0.98rem;
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+@media (max-width: 600px) {
+  .card {
+    padding: 36px 22px;
+    border-radius: 26px;
+  }
+
+  .question-title {
+    font-size: 1.65rem;
+  }
+
+  .question-subtitle {
+    font-size: 0.95rem;
+    margin-bottom: 26px;
+  }
+
+  .button-group {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .scene-title {
+    font-size: 1.7rem;
+  }
+
+  .scene-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .flower-container {
+    width: 240px;
+    height: 330px;
+  }
+}
